@@ -89,7 +89,7 @@ fun Mensaje(viewModel: ViewModelMensaje){
                     value = viewModel.Numero,
                     onValueChange ={viewModel.updateNumero(it)},
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    label = { Text(text = "Numero de Telefono")},
+                    label = { Text(text = "Numero de teléfono")},
                     singleLine = true,
                     modifier = Modifier
                         .size(350.dp, 70.dp)
@@ -103,8 +103,8 @@ fun Mensaje(viewModel: ViewModelMensaje){
                     value = viewModel.Mensaje,
                     onValueChange ={viewModel.updateMensaje(it)},
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    label = { Text(text = "Mensaje de respuesta")},
-                    placeholder = { Text(text = "Ingrese el mensaje de respuesta")},
+                    label = { Text(text = "Mensaje personalizado")},
+                    placeholder = { Text(text = "Ingrese el mensaje personalizado")},
                     modifier = Modifier.fillMaxWidth()
                 )
 
