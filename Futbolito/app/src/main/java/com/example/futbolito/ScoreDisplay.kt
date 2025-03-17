@@ -32,15 +32,15 @@ fun ScoreDisplay(topScore: Int, bottomScore: Int) {
             color = Color.Black, // Fondo negro para el Surface
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 37.dp, bottom = 16.dp) // Padding superior e inferior
+                .padding(top = 37.dp, bottom = 16.dp)
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically, // Alinea los elementos verticalmente al centro
-                modifier = Modifier.padding(16.dp) // Padding interior del Row
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(16.dp)
             ) {
-                // Logotipo del Barcelona (izquierda)
+                // Logotipo del Barcelona
                 Image(
-                    painter = painterResource(id = R.drawable.barcelona_logo), // Cambia "barcelona_logo" por el nombre de tu recurso
+                    painter = painterResource(id = R.drawable.barcelona_logo),
                     contentDescription = "Barcelona Logo",
                     modifier = Modifier.size(40.dp) // Tamaño del logotipo
                 )
@@ -69,9 +69,9 @@ fun ScoreDisplay(topScore: Int, bottomScore: Int) {
                     modifier = Modifier.weight(1f) // Ocupa el espacio restante
                 )
 
-                // Logotipo del Real Madrid (derecha)
+                // Logotipo del Real Madrid
                 Image(
-                    painter = painterResource(id = R.drawable.realmadrid_logo), // Cambia "real_madrid_logo" por el nombre de tu recurso
+                    painter = painterResource(id = R.drawable.realmadrid_logo),
                     contentDescription = "Real Madrid Logo",
                     modifier = Modifier.size(40.dp) // Tamaño del logotipo
                 )

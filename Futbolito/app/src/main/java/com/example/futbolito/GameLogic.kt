@@ -36,7 +36,7 @@ fun GameLogic(topScore: Int, bottomScore: Int, onScoreUpdate: (Int, Int) -> Unit
         val sensorValue by rememberAccelerometerSensorValueAsState()
         val (x, y, z) = sensorValue.value
 
-        // Calcula la nueva posición del círculo basado en la orientación y valores del acelerómetro
+        // Calcula la nueva posición del balón basado en la orientación y valores del acelerómetro
         center = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             Offset(
                 x = (center.x - x).coerceIn(radius, width - radius),
@@ -49,15 +49,15 @@ fun GameLogic(topScore: Int, bottomScore: Int, onScoreUpdate: (Int, Int) -> Unit
             )
         }
 
-        // Verifica si el círculo toca los límites superior o inferior y actualiza el marcador
+        // Verifica si el balón toca los límites superior o inferior del centro y actualiza el marcador
         when {
             center.y - radius <= 0 && (width / 2) < (center.x) + 100 && (width / 2) > center.x - 100 -> {
                 onScoreUpdate(topScore + 1, bottomScore)
-                center = Offset(width / 2, height / 2) // Reposiciona el círculo en el centro
+                center = Offset(width / 2, height / 2) // Reposiciona el balón en el centro
             }
             center.y + radius >= height && (width / 2) < (center.x) + 100 && (width / 2) > center.x - 100 -> {
                 onScoreUpdate(topScore, bottomScore + 1)
-                center = Offset(width / 2, height / 2) // Reposiciona el círculo en el centro
+                center = Offset(width / 2, height / 2) // Reposiciona el balón en el centro
             }
         }
 

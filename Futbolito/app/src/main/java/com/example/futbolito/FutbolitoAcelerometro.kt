@@ -41,6 +41,7 @@ fun FutbolitoAcelerometro()
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Marcador
             ScoreDisplay(topScore, bottomScore)
 
             // Lógica del juego
