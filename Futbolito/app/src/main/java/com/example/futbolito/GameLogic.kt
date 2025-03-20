@@ -28,40 +28,60 @@ fun GameLogic(topScore: Int, bottomScore: Int, onScoreUpdate: (Int, Int) -> Unit
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val width = constraints.maxWidth.toFloat()
         val height = constraints.maxHeight.toFloat()
+
         var center by remember { mutableStateOf(Offset(width / 2, height / 2)) }
+        var velocity by remember { mutableStateOf(Offset.Zero) }
+
         val orientation = LocalConfiguration.current.orientation
         val radius = with(LocalDensity.current) { 10.dp.toPx() }
-
-        // Obtiene los valores del sensor de acelerómetro
         val sensorValue by rememberAccelerometerSensorValueAsState()
         val (x, y, z) = sensorValue.value
 
-        // Calcula la nueva posición del balón basado en la orientación y valores del acelerómetro
-        center = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        val accelerationFactor = 0.05f
+
+        velocity = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             Offset(
-                x = (center.x - x).coerceIn(radius, width - radius),
-                y = (center.y + y).coerceIn(radius, height - radius),
+                x = (velocity.x - x * accelerationFactor),
+                y = (velocity.y + y * accelerationFactor)
             )
         } else {
             Offset(
-                x = (center.x + y).coerceIn(radius, width - radius),
-                y = (center.y + x).coerceIn(radius, height - radius),
+                x = (velocity.x + y * accelerationFactor),
+                y = (velocity.y + x * accelerationFactor)
             )
         }
 
-        // Verifica si el balón toca los límites superior o inferior del centro y actualiza el marcador
+        center = Offset(
+            x = (center.x + velocity.x).coerceIn(radius, width - radius),
+            y = (center.y + velocity.y).coerceIn(radius, height - radius)
+        )
+
+        // Revisa rebote lateral
+        if (center.x - radius <= 0 || center.x + radius >= width) {
+            velocity = velocity.copy(x = -velocity.x * 0.8f)
+        }
+
+        // Revisa rebote vertical (fuera del área del gol)
+        if ((center.y - radius <= 0 && (center.x !in (width/2 - 100f)..(width/2 + 100f))) ||
+            (center.y + radius >= height && (center.x !in (width/2 - 100f)..(width/2 + 100f)))) {
+            velocity = velocity.copy(y = -velocity.y * 0.8f)
+        }
+
+        // Verifica gol (área central superior/inferior)
         when {
-            center.y - radius <= 0 && (width / 2) < (center.x) + 100 && (width / 2) > center.x - 100 -> {
+            center.y - radius <= 0 && center.x in (width/2 - 100f)..(width/2 + 100f) -> {
                 onScoreUpdate(topScore + 1, bottomScore)
-                center = Offset(width / 2, height / 2) // Reposiciona el balón en el centro
+                center = Offset(width / 2, height / 2)
+                velocity = Offset.Zero
             }
-            center.y + radius >= height && (width / 2) < (center.x) + 100 && (width / 2) > center.x - 100 -> {
+            center.y + radius >= height && center.x in (width/2 - 100f)..(width/2 + 100f) -> {
                 onScoreUpdate(topScore, bottomScore + 1)
-                center = Offset(width / 2, height / 2) // Reposiciona el balón en el centro
+                center = Offset(width / 2, height / 2)
+                velocity = Offset.Zero
             }
         }
 
-        // Imagen de fondo y balón
+        // Dibujar imágenes del fondo y balón
         val image = ImageBitmap.imageResource(id = R.drawable.canchasoccer)
         val ballImage = ImageBitmap.imageResource(id = R.drawable.balon)
 
@@ -75,13 +95,12 @@ fun GameLogic(topScore: Int, bottomScore: Int, onScoreUpdate: (Int, Int) -> Unit
             )
             drawImage(
                 image = ballImage,
-                dstSize = IntSize((radius * 2).toInt(), (radius * 2).toInt()), // Tamaño del balón
+                dstSize = IntSize((radius * 2).toInt(), (radius * 2).toInt()),
                 dstOffset = IntOffset(
-                    (center.x - radius).toInt(), // Posición X del balón
-                    (center.y - radius).toInt()  // Posición Y del balón
+                    (center.x - radius).toInt(),
+                    (center.y - radius).toInt()
                 )
             )
-
         }
     }
 }
